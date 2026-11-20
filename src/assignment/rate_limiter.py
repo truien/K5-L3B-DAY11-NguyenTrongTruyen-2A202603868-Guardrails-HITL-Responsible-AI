@@ -30,20 +30,31 @@ class RateLimitPlugin(base_plugin.BasePlugin):
             parts=[types.Part.from_text(text=message)],
         )
 
-    async def on_user_message_callback(self, *, invocation_context, user_message):
-        """Return Content to block, or None to allow."""
+    async def on_user_message_callback(
+        self, *, invocation_context, user_message
+    ):
         self.total_count += 1
-        user_id = getattr(invocation_context, "user_id", None) or "anonymous"
+
+        user_id = (
+            getattr(invocation_context, "user_id", None)
+            or "anonymous"
+        )
         now = time.time()
         window = self.user_windows[user_id]
 
-        # TODO: Implement sliding window:
-        # 1. Pop timestamps older than (now - window_seconds) from the left
-        # 2. If len(window) >= max_requests:
-        #       wait = window_seconds - (now - window[0])
-        #       self.blocked_count += 1
-        #       return self._block_response(
-        #           f"Rate limit exceeded. Try again in {wait:.0f}s."
-        #       )
-        # 3. Else: append now, return None
-        raise NotImplementedError("Implement RateLimitPlugin.on_user_message_callback")
+        # Bỏ các request đã nằm ngoài cửa sổ thời gian.
+        while window and window[0] <= now - self.window_seconds:
+            window.popleft()
+
+        # Chặn nếu đã dùng hết số request được phép.
+        if len(window) >= self.max_requests:
+            wait = self.window_seconds - (now - window[0])
+            self.blocked_count += 1
+
+            return self._block_response(
+                f"Rate limit exceeded. Try again in {wait:.0f}s."
+            )
+
+        # Ghi nhận request được phép đi tiếp.
+        window.append(now)
+        return None

@@ -242,6 +242,12 @@ def _model_entry(provider: str, model: str) -> dict:
         "engine": "openai",
         "model": model,
         "api_key_env_var": "OPENAI_API_KEY",
+        "parameters": {
+            "base_url": (
+                os.environ.get("OPENAI_BASE_URL", "").strip()
+                or "http://localhost:20128/v1"
+            ),
+        },
     }
 
 

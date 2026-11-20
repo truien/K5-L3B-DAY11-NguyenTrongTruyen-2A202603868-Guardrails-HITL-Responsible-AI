@@ -41,10 +41,10 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_OPENROUTER_MODEL = BLUE_MODEL  # alias
 
 # --- Red Team ---
-DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
+DEFAULT_OPENAI_MODEL = "ag/gpt-oss-120b-medium"
 DEFAULT_GEMINI_MODEL = "gemini-3.5-flash"
 # Model khó — tuỳ chọn (không phải tên agent; không bắt buộc để có B1/B2)
-HARD_OPENAI_MODEL = "gpt-5.6-luna"
+HARD_OPENAI_MODEL = "ag/gemini-3.8-flash"
 HARD_GEMINI_MODEL = "gemini-3.8-flash"
 
 # --- Protected data (DEMO) ---
